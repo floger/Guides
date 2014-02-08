@@ -2,7 +2,7 @@
 
 講解 Rails 與 Rack 的關係。
 
-讀完本篇你可能會學到...
+讀完可能會學到...
 
 * 在 Rails 裡如何使用 Rack Middleware。
 * ActionPack 內部的 Middleware 介紹。
@@ -39,7 +39,7 @@ Rack 提供了簡單、精簡、模組化的介面，在 Ruby 裡開發 web 應�
 
 假設我們的 Rails 應用程式叫做 `myapp`
 
-`Myapp::Application` 便是 Rails 應用程式的 Rack object，可以用 `Rails.application` 來存取。
+`MyApp::Application` 便是 Rails 應用程式的 Rack object，可以用 `Rails.application` 來存取。
 
 ## 2.2 `rails server`
 
@@ -190,7 +190,7 @@ config.middleware.insert_after ActiveRecord::QueryCache, Lifo::Cache, page_cache
 
 ### 3.2.2 Swapping a Middleware
 
-將 Middleware stack 的 middleware 交換位置：
+將 Middleware stack 的 middleware 交換加載順序：
 
 ```ruby
 # config/application.rb
@@ -247,7 +247,7 @@ Action Controller 多數的功能皆以 middleware 的方式實現，下面這�
 | **`ActiveRecord::Migration::CheckPending`** | 檢查是否有未執行的 migrations，若有，拋出 `PendingMigrationError` 錯誤。|
 | **`ActiveRecord::ConnectionAdapters::ConnectionManagement`** | 每個請求結束後，若 `rack.test` 不為真，則將作用中的連結（active connection）結束。|
 | **`ActiveRecord::QueryCache`** | 啟用 Active Record 的 query cache。|
-| **`ActionDispatch::Cookies`** | 幫請求設定 cookie。|
+| **`ActionDispatch::Cookies`** | 幫 Request 設定 cookie。|
 | **`ActionDispatch::Session::CookieStore`** | 負責把 session 存到 cookie。|
 | **`ActionDispatch::Flash`** | `config.action_controller.session_store` 設定為真時，設定 [flash][theflash] keys。|
 | **`ActionDispatch::ParamsParser`** | 將參數解析成 `params` hash。|
@@ -256,25 +256,6 @@ Action Controller 多數的功能皆以 middleware 的方式實現，下面這�
 | **`Rack::ETag`** | 為所有字串 body 加上 ETag header，用來驗證 cache 之用。|
 
 以上的 middleware 都可以在自己的 Rack stack 裡使用。
-
-## 3.4 使用 Rack Builder
-
-下面示範如何使用 Rack Builder 換掉 Rails 提供的 Middleware stack。
-
-__先清除 Rails 的 Middleware stack__
-
-```ruby
-# config/application.rb
-config.middleware.clear
-```
-
-修改 Rails.root 目錄下的 `config.ru`：
-
-```ruby
-# config.ru
-use MyOwnStackFromScratch
-run Rails.application
-```
 
 # 4. 學習資源
 

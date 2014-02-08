@@ -175,28 +175,28 @@ class Person < ActiveRecord::Base
 end
 
 >> p = Person.new
-#=> #<Person id: nil, name: nil>
+# => #<Person id: nil, name: nil>
 >> p.errors.messages
-#=> {}
+# => {}
 
 >> p.valid?
-#=> false
+# => false
 >> p.errors.messages
-#=> {name:["can't be blank"]}
+# => {name:["can't be blank"]}
 
 >> p = Person.create
-#=> #<Person id: nil, name: nil>
+# => #<Person id: nil, name: nil>
 >> p.errors.messages
-#=> {name:["can't be blank"]}
+# => {name:["can't be blank"]}
 
 >> p.save
-#=> false
+# => false
 
 >> p.save!
-#=> ActiveRecord::RecordInvalid: Validation failed: Name can't be blank
+# => ActiveRecord::RecordInvalid: Validation failed: Name can't be blank
 
 >> Person.create!
-#=> ActiveRecord::RecordInvalid: Validation failed: Name can't be blank
+# => ActiveRecord::RecordInvalid: Validation failed: Name can't be blank
 ```
 
 `invalid?` is simply the inverse of `valid?`. It triggers your validations,
@@ -337,7 +337,7 @@ set. In fact, this set can be any enumerable object.
 ```ruby
 class Account < ActiveRecord::Base
   validates :subdomain, exclusion: { in: %w(www us ca jp),
-    message: "Subdomain %{value} is reserved." }
+    message: "%{value} is reserved." }
 end
 ```
 
@@ -438,8 +438,6 @@ provide a personalized message or use `presence: true` instead. When
 `:in` or `:within` have a lower limit of 1, you should either provide a
 personalized message or call `presence` prior to `length`.
 
-The `size` helper is an alias for `length`.
-
 ### `numericality`
 
 This helper validates that your attributes have only numeric values. By
@@ -528,7 +526,7 @@ If you validate the presence of an object associated via a `has_one` or
 Since `false.blank?` is true, if you want to validate the presence of a boolean
 field you should use `validates :field_name, inclusion: { in: [true, false] }`.
 
-The default error message is _"can't be empty"_.
+The default error message is _"can't be blank"_.
 
 ### `absence`
 
@@ -577,7 +575,9 @@ This helper validates that the attribute's value is unique right before the
 object gets saved. It does not create a uniqueness constraint in the database,
 so it may happen that two different database connections create two records
 with the same value for a column that you intend to be unique. To avoid that,
-you must create a unique index in your database.
+you must create a unique index on both columns in your database. See
+[the MySQL manual](http://dev.mysql.com/doc/refman/5.6/en/multiple-column-indexes.html)
+for more details about multi column indexes.
 
 ```ruby
 class Account < ActiveRecord::Base
@@ -618,16 +618,16 @@ The default error message is _"has already been taken"_.
 This helper passes the record to a separate class for validation.
 
 ```ruby
-class Person < ActiveRecord::Base
-  validates_with GoodnessValidator
-end
-
 class GoodnessValidator < ActiveModel::Validator
   def validate(record)
     if record.first_name == "Evil"
       record.errors[:base] << "This person is evil"
     end
   end
+end
+
+class Person < ActiveRecord::Base
+  validates_with GoodnessValidator
 end
 ```
 
@@ -646,16 +646,16 @@ Like all other validations, `validates_with` takes the `:if`, `:unless` and
 validator class as `options`:
 
 ```ruby
-class Person < ActiveRecord::Base
-  validates_with GoodnessValidator, fields: [:first_name, :last_name]
-end
-
 class GoodnessValidator < ActiveModel::Validator
   def validate(record)
     if options[:fields].any?{|field| record.send(field) == "Evil" }
       record.errors[:base] << "This person is evil"
     end
   end
+end
+
+class Person < ActiveRecord::Base
+  validates_with GoodnessValidator, fields: [:first_name, :last_name]
 end
 ```
 
@@ -783,7 +783,7 @@ end
 Person.new.valid?  # => ActiveModel::StrictValidationFailed: Name can't be blank
 ```
 
-There is also an ability to pass custom exception to `:strict` option
+There is also an ability to pass custom exception to `:strict` option.
 
 ```ruby
 class Person < ActiveRecord::Base

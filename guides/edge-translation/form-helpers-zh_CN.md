@@ -1,12 +1,16 @@
 # [Form Helpers][fh]
 
-表单（Form）是给使用者输入的介面，web 应用里面最基础的元素之一。表单写起来很繁琐，Rails 提供很多有用的 helper 让你快速制造出符合不同需求的表单。
+__特别要强调的翻译名词__
+
+> render 渲染
+
+表单（Form）是给使用者输入的界面，web 应用里面最基础的元素之一。表单写起来很繁琐，Rails 提供很多有用的 helper 让你快速制造出符合不同需求的表单。
 
 ## 目录
 
 - [1. 简单的表单](#1-简单的表单)
   - [1.1 通用搜索表单](#11-通用搜索表单)
-    - [1.2 Form Helper 呼叫里传多个 Hash](#12-form-helper-呼叫里传多个-hash)
+    - [1.2 Form Helper 调用里传多个 Hash](#12-form-helper-调用里传多个-hash)
     - [1.3 生成表单的 Helpers](#13-生成表单的-helpers)
       - [1.3.1 Checkbox](#131-checkbox)
       - [1.3.2 Radio Buttons](#132-radio-buttons)
@@ -68,16 +72,16 @@
 </form>
 ```
 
-注意到 HTML 里有个额外的 `div` 元素，里面有两个 input。第一个 input 让浏览器使用 `utf8`。第二个 input 是 Rails 内建用来防止 __CSRF (cross-site request forgery protection)__ 攻击的安全机制，每个非 GET 的表单，Rails 都会帮你生成一个这样的 `authenticity_token`。
+注意到 HTML 里有个额外的 `div` 元素，里面有两个 `input`。第一个 `input` 让浏览器使用 `UTF-8`。第二个 `input` 是 Rails 内建用来防止 __CSRF (cross-site request forgery protection)__ 攻击的安全机制，每个非 GET 的表单，Rails 都会帮你生成一个这样的 `authenticity_token`。
 
 ## 1.1 通用搜索表单
 
 最简单的表单就是搜索表单了，通常有：
 
 * 一个有 GET 动词的表单。
-* 可输入文字的 input。
-* input 有 label。
-* 送出元素
+* 可输入文字的 `input`。
+* `input` 有 `label`。
+* 送出元素。
 
 ```erb
 <%= form_tag("/search", method: "get") do %>
@@ -87,7 +91,7 @@
 <% end %>
 ```
 
-用到这四个 helper：`form_tag`、`label_tag`、`text_field_tag​​`、`submit_tag`。
+用到这四个 Helper：`form_tag`、`label_tag`、`text_field_tag​​`、`submit_tag`。
 
 会生成如下 HTML：
 
@@ -103,17 +107,17 @@ ID 是根据表单名称（上例为 `q`）所生成，可供 CSS 或 JavaScript
 
 __切记：搜索表单用正确的 HTTP 动词：GET。__
 
-### 1.2 Form Helper 呼叫里传多个 Hash
+### 1.2 Form Helper 调用里传多个 Hash
 
-`form_tag` 接受 2 个参数： __动作发生的路径（path）与选项（以 hash 形式传入）__。可指定送出时要用的方法，及更改表单元素的 class 等。
+`form_tag` 接受 2 个参数： __动作发生的路径（path）与选项（以 hash 形式传入）__。可指定送出时要用的方法、更改表单元素的 `class` 等。
 
-和 `link_to` 相似，路径可以不是字串。可以是 Rails router 看的懂的 URL hash，比如：
+和 `link_to` 相似，路径可以不是字串。可以是 Rails Router 看的懂的 URL hash，比如：
 
 ```ruby
 { controller: "people", action: "search" }
 ```
 
-路径跟选项都是以 hash 传入，很容易把两者混在一起，看这个例子：
+路径和选项都是以 hash 传入，很容易把两者混在一起，看这个例子：
 
 ```ruby
 form_tag(controller: "people", action: "search", method: "get", class: "nifty_form")
@@ -129,7 +133,7 @@ form_tag({controller: "people", action: "search"}, method: "get", class: "nifty_
 
 ### 1.3 生成表单的 Helpers
 
-Rails 提供一系列的 Helpers，可以生成 checkbox、text field、radio buttons。
+Rails 提供一系列的 Helpers，可以生成 checkbox、text field、radio buttons 等。
 
 __`_tag` 结尾的 helper 会生成一个 `<input>`__ ：
 
@@ -145,7 +149,7 @@ __`_tag` 结尾的 helper 会生成一个 `<input>`__ ：
 
 #### 1.3.1 Checkbox
 
-Checkbox? 使用者有一系列的选项，可多选：
+Checkbox 是多选框，让使用者有一系列可多选的选项：
 
 ```erb
 <%= check_box_tag(:pet_dog) %>
@@ -187,11 +191,11 @@ Checkbox? 使用者有一系列的选项，可多选：
 
 `radio_button_tag` 第二个参数同样是 `input` 的 `value`，上例中 `name` 都是 `age`，若使用者有按其中一个 radio button 的话，可以用 `params[:age]` 取出。可能的值是 `"child"` 或 `"adult"`。
 
-__记得要给 checkbox 与 radio button 加上 `label`，这样让可按的区域变得较广。__
+__记得要给 checkbox 与 radio button 加上 `label`，这样可按的区域更广。__
 
 ### 1.4 其它相关的 helpers
 
-textareas, password fields, hidden fields, search fields, telephone fields, date fields, time fields, color fields, datetime fields, datetime-local fields, month fields, week fields, URL fields and email fields， __其中 search、telephone、 date、time、color、datetime、datetime-local、month、week、URL、以及 email 是 HTML5 才有的 input__。
+textareas、password fields、hidden fields、search fields、telephone fields、date fields、time fields、color fields、datetime fields、datetime-local fields、month fields、week fields、url fields、email fields、number fields 及 range fields， __其中 search、telephone、date、time、color、datetime、datetime-local、month、week、url、email、number 以及 range 是 HTML5 才有的 input type__。
 
 ```erb
 <%= text_area_tag(:message, "Hi, nice site", size: "24x6") %>
@@ -208,6 +212,8 @@ textareas, password fields, hidden fields, search fields, telephone fields, date
 <%= email_field(:user, :address) %>
 <%= color_field(:user, :favorite_color) %>
 <%= time_field(:task, :started_at) %>
+<%= number_field(:price, nil, in: 1.0..20.0, step: 0.5) %>
+<%= range_field(:percent, nil, in: 1..100) %>
 ```
 
 会生成：
@@ -227,15 +233,17 @@ textareas, password fields, hidden fields, search fields, telephone fields, date
 <input id="user_address" name="user[address]" type="email" />
 <input id="user_favorite_color" name="user[favorite_color]" type="color" value="#000000" />
 <input id="task_started_at" name="task[started_at]" type="time" />
+<input id="price_" max="20.0" min="1.0" name="price[]" step="0.5" type="number" />
+<input id="percent_" max="100" min="1" name="percent[]" type="range" />
 ```
 
 # 2. 处理 Model 对象的 Helpers
 
 ## 2.1 Model 对象的 Helpers
 
-表单通常是拿来编辑或新建一个 model 对象。带有 `_tag` 字尾的 Helpers 可以解决这件事，但是太繁琐了。 Rails 提供更多方便的 Helpers（没有 `_tag` 字尾），像是 `text_field`、`text_area` 等，用来处理 Model 对象。
+表单通常拿来编辑或新建 model 对象。带有 `_tag` 字尾的 Helpers 可以办到这件事，但太繁琐了。 Rails 提供更多方便的 Helpers（没有 `_tag` 字尾），像是 `text_field`、`text_area` 等，用来处理 Model 对象。
 
-这些 Helpers 的第一个参数是实例变量的 `name`，第二个参数是要对实例对象调用的方法名（通常是 attr​​ibute）。 Rails 会将调用的结果存成 `input` 的 `value`，并帮你给 `input` 的 `name` 取个好名字。
+这些 Helpers 的第一个参数是实例变量的名字 `name`，第二个参数是要对实例对象调用的方法名称（通常是 `attr​​ibute`）。 Rails 会将调用的结果存成 `input` 的 `value`，并帮你给 `input` 的 `name` 取个好名字。
 
 假设 controller 定义了 `@person`，这 `@person` 的 `name` 叫 `Henry`，则
 
@@ -257,11 +265,11 @@ textareas, password fields, hidden fields, search fields, telephone fields, date
 
 只要 `Person` 对象 有 `name` 与 `name=` 就可以了。
 
-__警告：第一个参数必须是实例变量的名称，如：`:person` 或 `"person"`，而不是传实际的实例进去。__
+__警告：第一个参数必须是实例变量的“名称”，如：`:person` 或 `"person"`，而不是传实际的实例进去。__
 
 ## 2.2 将表单绑定至对象
 
-当 `Person` 有很多属性时，我们得一直重复传入 `:person` 来生成对应的表单。 Rails 提供了 `form_for` 让你把表单绑定至 model 的对象。
+当 `Person` 有很多属性时，得重复传入 `:person` 来生成对应的表单时。Rails 提供了 `form_for` 让你把表单绑定至 model 的对象。
 
 假设我们有个处理文章的 controller：`app/controllers/articles_controller.rb`：
 
@@ -284,7 +292,7 @@ end
 几件事情要说明一下：
 
 * `@article` 是实际被编辑的对象。
-* 有两个 options (hash）：`:url` 与 `:html`。还可传入 `:namespace`，用来生成独一无二的 ID。
+* 传入了两个选项 (hash）：`:url` 与 `:html`。还可传入 `:namespace`，用来生成独一无二的 ID。
 * `|f|` 为 form builder。
 * 本来写成 `text_field(:article)` 改为 `f.text_filed`。
 
@@ -320,7 +328,7 @@ end
 
 ## 2.3 Record Identification
 
-假设你是用 RESTful 风格：
+假设你依循 RESTful 风格：
 
 ```ruby
 resources :articles
@@ -354,6 +362,8 @@ form_for(@article)
 
 但若使用了 STI（Single Table Inheritance，单表继承）则得明确指定 `:url` 与 `:method`。
 
+__写 `form_for` 最好指定 `:url`，这是一个常见的新手错误。__
+
 ### 2.3.1 处理 namespace
 
 如果你有 namespace 的 route，`form_for` 也有个简便的缩写：
@@ -362,7 +372,7 @@ form_for(@article)
 form_for [:admin, @article]
 ```
 
-会新建一个表单，在 `admin` namespace 下将表单送给 `articles` controller。
+会新建一个表单，在 `admin` namespace 下，将表单送给 `articles` Controller。
 
 上面这种写法等价于：
 
@@ -370,7 +380,7 @@ form_for [:admin, @article]
 form_for admin_article_path(@article)
 ```
 
-如果有更多层的命名空间，依样画葫芦就是了：
+如果有更多层的命名空间，依样画葫芦便是：
 
 ```ruby
 form_for [:admin, :management, @article]
@@ -378,7 +388,7 @@ form_for [:admin, :management, @article]
 
 ## 2.4 PATCH、PUT、DELETE 表单是怎么工作的？
 
-Rails 框架提倡使用 _RESTful_ 风格来设计 web 应用。这表示会有很多 “PATCH” 以及 “DELETE” 请求（request），而不是 “GET” 与 “POST”，但多数浏览器在送出表单时，不支援非 `GET` 或 `POST` 的请求。 Rails 透过一个 `name` 为 `_method` 的隐藏 `input` 来模拟 POST。
+Rails 框架提倡使用 _RESTful_ 风格来设计 web 应用。这表示会有很多 “PATCH” 以及 “DELETE” 请求（request），而不是 “GET” 与 “POST”，但多数浏览器在送出表单时，不支援非 `GET` 或 `POST` 的请求。 Rails 通过一个 `name` 为 `_method` 的 hidden `input` 来将 PATCH 请求，模拟成 POST。
 
 ```ruby
 form_tag(search_path, method: "patch")
@@ -400,7 +410,7 @@ form_tag(search_path, method: "patch")
 
 # 3. 轻松制作下拉式选单
 
-HTML 纯手写下拉式选单（Select box）需要花很多工夫，比如说有 12 个城市的下拉选单：
+HTML 纯手写下拉式选单（Select box）需要花很多功夫，比如说有 12 个城市的下拉选单：
 
 ```html
 <select name="city_id" id="city_id">
@@ -421,7 +431,7 @@ HTML 纯手写下拉式选单（Select box）需要花很多工夫，比如说�
 <%= select_tag(:city_id, '<option value="1">Lisbon</option>...') %>
 ```
 
-这只是刚开始而已，封装字串在 `select_tag` 里面无法动态生成 option 标签，于是有了 `options_for_select`：
+这只是刚开始而已，上面把字串封装在 `select_tag` 里面，无法动态生成 `option` 标签，于是有了 `options_for_select`：
 
 ```html+erb
 <%= options_for_select([['Lisbon', 1], ['Madrid', 2], ...]) %>
@@ -435,7 +445,7 @@ HTML 纯手写下拉式选单（Select box）需要花很多工夫，比如说�
 ...
 ```
 
-`options_for_select` 的第一个参数是嵌套的 array，每个元素有两个元素，城市名称（option text）与数值（option value）。 option value 是会传给 controller 的数值。通常会是数据库对象里对应的 id。
+`options_for_select` 的第一个参数是嵌套的 array，每个元素有两个元素，城市名称（option text）与数值（option value）。 option value 是会传给 controller 的数值。通常会是数据库里，对象对应的 `id`。
 
 现在把 `select_tag` 与 `options_for_select` 结合起来：
 
@@ -459,7 +469,7 @@ HTML 纯手写下拉式选单（Select box）需要花很多工夫，比如说�
 
 预设值会加上 `selected` attribute。
 
-__注意__ `options_for_select` 的第二个参数的类型必须与你想要的数值类型一样，整数就整数、字串就字串。从 `params` 取出的数值为字串，这点要注意一下。
+__注意__ `options_for_select` 的第二个参数的类型，必须与你想要的数值类型一样，整数就整数、字串就字串。从 `params` 取出的数值为字串，这点要注意一下。
 
 可以用 hash 给每个 option 加上任意的属性：
 
@@ -477,7 +487,11 @@ __注意__ `options_for_select` 的第二个参数的类型必须与你想要的
 
 ## 3.2 处理 Models 的下拉选单
 
-表单与 model 结合，下拉选单也是。处理 model 时，去掉 `_tag` 字尾，用 `select` 即可：
+多数情况下，表单控件会与特定数据库模型绑在一起，而由于你预期 Rails 会提供定制好的 Helper 给你用。
+
+Rails 已经帮你想好了！有的，表单处理 Model 对象把 `_tag` 去掉；
+
+下拉选单也一样，`select_tag` 去掉 `_tag`，用 `select` 即可：
 
 ```ruby
 # controller:
@@ -502,7 +516,7 @@ __注意__ `options_for_select` 的第二个参数的类型必须与你想要的
 
 ## 3.3 从任意对象集合来的 option 标签
 
-`options_for_select` 需要给一个 array 参数，包含了 option 的 `text` 与 `value`。但要是已经有了 City model，想要直接从 model 里生成这些选项该怎么做？
+`options_for_select` 需要给一个 array 参数，包含了 option 的 `text` 与 `value`。但要是已经有了 City Model，想要直接从 Model 里生成这些选项该怎么做？
 
 ```erb
 <% cities_array = City.all.map { |city| [city.name, city.id] } %>
@@ -511,7 +525,7 @@ __注意__ `options_for_select` 的第二个参数的类型必须与你想要的
 
 这完全是个完美又可行的解决方案，但 Rails 提供一个更方便的方法：`options_from_collection_for_select`
 
-这个 helper 接受一个随意对象的集合（collection of arbitrary objects）及两个额外的参数：读取 `option` 的 **value** 与 **text** 的名称。
+这个 helper 接受一个任意对象的集合（collection of arbitrary objects）及两个额外的参数：读取 `option` 的 **value** 与 **text** 的名称。
 
 __注意 `options_from_collection_for_select` 参数 `value` 与 `text` 的顺序与 `options_for_select` 颠倒__。
 
@@ -526,7 +540,6 @@ __注意 `options_from_collection_for_select` 参数 `value` 与 `text` 的顺�
 `select` = `select_tag` + `options_for_select`
 
 `collection_select` = `select_tag` + `options_from_collection_for_select`
-
 
 ## 3.4 Time Zone 与 Country
 
@@ -639,7 +652,7 @@ __经验法则：跟 model 用 `date_select`、其它情况用 `select_date`。_
 
 `params[:date][:year]` 可取出使用者选择的年份。
 
-可以进一步透过 `:prefix` 或是 `field_name` 选项来订制 `select` 标签。
+可以进一步通过 `:prefix` 或是 `field_name` 选项来订制 `select` 标签。
 
 用 `field_name` 选项：
 
@@ -808,12 +821,10 @@ Hash 可以嵌套：
 
 hash 里可以有数组，或是数组里可以有 hash。举例来说，表单可以让你填入任何地址：
 
-We can mix and match these two concepts. For example, one element of a hash might be an array as in the previous example, or you can have an array of hashes. For example a form might let you create any number of addresses by repeating the following form fragment
-
 ```html
 <input name="addresses[][line1]" type="text"/>
 <input name="addresses[][line2]" type="text"/>
-<input name="addresses[][city]" type="text"/>
+<input name="addresses[][city]"  type="text"/>
 ```
 
 则 `params[:address]` 会是个里面有数组的 hash，。 hash 的键为 `line1`、`line2`、`city`。 Rails 在碰到已经存在的名称时才会新建一个 hash。
@@ -840,7 +851,7 @@ __警告：__
 <%= form_for @person do |person_form| %>
   <%= person_form.text_field :name %>
   <% @person.addresses.each do |address| %>
-    <%= person_form.fields_for address, index: address do |address_form|%>
+    <%= person_form.fields_for address, index: address.id do |address_form|%>
       <%= address_form.text_field :city %>
     <% end %>
   <% end %>
@@ -928,7 +939,7 @@ __`fields_for` 或 `form_for` 传入的名字 ＋ index 的值 ＋ 属性名称_
 
 # 9. 打造复杂的表单
 
-许多 app 需要复杂的表单。举例来说，创造一个 Person，你可能想让使用者，再同一个表单填多个地址（home、work... 等）而之后 Person 编辑个人数据的时候要可以新增、修改或取消已输入的地址。
+许多应用程序需要复杂的表单。举例来说，创造一个 `Person`，你可能想让使用者，使用者可填地址，用同个表单填多组地址（家里地址、单位地址、老家地址...等）而之后 `Person` 编辑个人数据的时候要可以新增、修改或取消已输入的地址。
 
 ## 9.1 设​​定 Model
 
@@ -945,11 +956,11 @@ class Address < ActiveRecord::Base
 end
 ```
 
-这给 `Person` 创建了一个 `addresses_attributes=` 方法，让你可 `create`、`update` 及（选择性） `destroy` 地址。
+这给 `Person` 创建了一个 `addresses_attributes=` 方法，让你可 `create`、`update` 及（选择性） `destroy` 地址。也就是通过 `Person` 来操纵 `Address` Model。
 
 ## 9.2 制作表单
 
-下面这个表单让使用者（`Person`）可以填多个地址：
+下面这个表单让使用者（`Person`）可以填多组地址：
 
 ```html+erb
 <%= form_for @person do |f| %>
@@ -969,16 +980,18 @@ end
 <% end %>
 ```
 
-渲染出三组地址表单：
+当 `Person` 声明了 `accepts_nested_attributes_for`，`fields_for` 会给关联 Model 里的每个元素都渲染一次；也就是说，假设 `Person` 有 2 组地址：
 
 ```ruby
 def new
   @person = Person.new
-  3.times { @person.addresses.build}
+  2.times { @person.addresses.build}
 end
 ```
 
-有两组地址的使用者，传出去的参数看起来会像是：
+`fields_for` 会为 2 组地址的每个栏位都渲染一次。
+
+有两组地址的使用者，表单送出的参数看起来会像是：
 
 ```ruby
 {
@@ -1020,7 +1033,7 @@ private
 
 ### 9.4 移除对象
 
-可以允许使用者删除地址，透过传入 `allow_destroy: true` 给 `accepts_nested_attributes_for`
+可以允许 `Person` 删除 `Address`，通过传入 `allow_destroy: true` 选项给 `accepts_nested_attributes_for`：
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -1029,7 +1042,9 @@ class Person < ActiveRecord::Base
 end
 ```
 
-当 `_destroy` 为 `'1'` 或 `'true'` 时，对象会被销毁。用来移除地址的表单：
+当 `_destroy` 为 `1` 或 `true` 时，对象会被销毁。
+
+用来移除地址的表单这么写：
 
 ```erb
 <%= form_for @person do |f| %>
@@ -1047,7 +1062,7 @@ end
 <% end %>
 ```
 
-别忘了给 controller 的白名单加上 `_destroy`：
+别忘了给 controller 的 Strong Parameter 加上 `_destroy`：
 
 ```ruby
 def person_params
@@ -1090,5 +1105,7 @@ end
 * [Form Helpers — Ruby on Rails Guides][fh]
 
 * [Ruby on Rails 实战圣经| ActionView Helpers 辅助方法](http://ihower.tw/rails3/actionview-helpers.html)
+
+关于嵌套表单可參考 [Railscasts #196 (Pro)](http://railscasts.com/episodes/196-nested-model-form-revised)。
 
 [fh]: http://edgeguides.rubyonrails.org/form_helpers.html

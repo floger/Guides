@@ -14,16 +14,19 @@
 
 ## 工具
 
+[Web Development 工具箱](/tools/index.md)
+
 [如何撰寫簡單的 Rake 任務](/articles/009-create-a-rake-task.md)
 
 [ERB 轉換成 HAML](/articles/030-erb-to-haml.md)
+
+[CI —— Continuous Integration](/articles/037-ci.md)
 
 ## Misc
 
 [語義版本簡介](/articles/002-sem-ver.md)
 
 [Gem 挑選指南](/articles/005-gem-selection-guide.md)
-
 
 ## 環境
 

@@ -122,8 +122,7 @@ X-Runtime: 0.014297
 Set-Cookie: _blog_session=...snip...; path=/; HttpOnly
 Cache-Control: no-cache
 
-
- $
+$
 ```
 
 We see there is an empty response (no data after the `Cache-Control` line), but the request was successful because Rails has set the response to 200 OK. You can set the `:status` option on render to change this response. Rendering nothing can be useful for Ajax requests where all you want to send back to the browser is an acknowledgment that the request was completed.
@@ -137,7 +136,7 @@ If you want to render the view that corresponds to a different template within t
 ```ruby
 def update
   @book = Book.find(params[:id])
-  if @book.update(params[:book])
+  if @book.update(book_params)
     redirect_to(@book)
   else
     render "edit"
@@ -152,7 +151,7 @@ If you prefer, you can use a symbol instead of a string to specify the action to
 ```ruby
 def update
   @book = Book.find(params[:id])
-  if @book.update(params[:book])
+  if @book.update(book_params)
     redirect_to(@book)
   else
     render :edit
@@ -405,7 +404,7 @@ class ProductsController < ApplicationController
 end
 ```
 
-With this declaration, all of the views rendered by the products controller will use `app/views/layouts/inventory.html.erb` as their layout.
+With this declaration, all of the views rendered by the `ProductsController` will use `app/views/layouts/inventory.html.erb` as their layout.
 
 To assign a specific layout for the entire application, use a `layout` declaration in your `ApplicationController` class:
 
@@ -704,7 +703,7 @@ WARNING: The asset tag helpers do _not_ verify the existence of the assets at th
 
 #### Linking to Feeds with the `auto_discovery_link_tag`
 
-The `auto_discovery_link_tag` helper builds HTML that most browsers and newsreaders can use to detect the presence of RSS or Atom feeds. It takes the type of the link (`:rss` or `:atom`), a hash of options that are passed through to url_for, and a hash of options for the tag:
+The `auto_discovery_link_tag` helper builds HTML that most browsers and feed readers can use to detect the presence of RSS or Atom feeds. It takes the type of the link (`:rss` or `:atom`), a hash of options that are passed through to url_for, and a hash of options for the tag:
 
 ```erb
 <%= auto_discovery_link_tag(:rss, {action: "feed"},
@@ -1009,7 +1008,6 @@ You can also pass local variables into partials, making them even more powerful 
 
     ```html+erb
     <h1>New zone</h1>
-    <%= error_messages_for :zone %>
     <%= render partial: "form", locals: {zone: @zone} %>
     ```
 
@@ -1017,7 +1015,6 @@ You can also pass local variables into partials, making them even more powerful 
 
     ```html+erb
     <h1>Editing zone</h1>
-    <%= error_messages_for :zone %>
     <%= render partial: "form", locals: {zone: @zone} %>
     ```
 

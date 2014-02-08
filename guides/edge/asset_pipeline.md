@@ -26,14 +26,14 @@ been extracted out of the framework into the
 
 The asset pipeline is enabled by default.
 
-You can disable the asset pipeline while creating a new application by 
+You can disable the asset pipeline while creating a new application by
 passing the `--skip-sprockets` option.
 
 ```bash
 rails new appname --skip-sprockets
 ```
 
-Rails 4 automatically adds the `sass-rails`, `coffee-rails` and `uglifier` 
+Rails 4 automatically adds the `sass-rails`, `coffee-rails` and `uglifier`
 gems to your Gemfile, which are used by Sprockets for asset compression:
 
 ```ruby
@@ -42,7 +42,7 @@ gem 'uglifier'
 gem 'coffee-rails'
 ```
 
-Using the `--skip-sprockets` option will prevent Rails 4 from adding 
+Using the `--skip-sprockets` option will prevent Rails 4 from adding
 `sass-rails` and `uglifier` to Gemfile, so if you later want to enable
 the asset pipeline you will have to add those gems to your Gemfile. Also,
 creating an application with the `--skip-sprockets` option will generate
@@ -54,7 +54,7 @@ the comment operator on that line to later enable the asset pipeline:
 # require "sprockets/railtie"
 ```
 
-To set asset compression methods, set the appropriate configuration options 
+To set asset compression methods, set the appropriate configuration options
 in `production.rb` - `config.assets.css_compressor` for your CSS and
 `config.assets.js_compressor` for your Javascript:
 
@@ -151,8 +151,7 @@ environments. You can enable or disable it in your configuration through the
 More reading:
 
 * [Optimize caching](http://code.google.com/speed/page-speed/docs/caching.html)
-* [Revving Filenames: don't use
-* querystring](http://www.stevesouders.com/blog/2008/08/23/revving-filenames-dont-use-querystring/)
+* [Revving Filenames: don't use querystring](http://www.stevesouders.com/blog/2008/08/23/revving-filenames-dont-use-querystring/)
 
 
 How to Use the Asset Pipeline
@@ -229,7 +228,7 @@ Pipeline assets can be placed inside an application in one of three locations:
 * `app/assets` is for assets that are owned by the application, such as custom
 images, JavaScript files or stylesheets.
 
-* `lib/assets` is for your own libraries' code that doesn't really fit into the 
+* `lib/assets` is for your own libraries' code that doesn't really fit into the
 scope of the application or those libraries which are shared across applications.
 
 * `vendor/assets` is for assets that are owned by outside entities, such as
@@ -351,8 +350,8 @@ Alternatively, a request for a file with an MD5 hash such as
 way. How these hashes are generated is covered in the [In
 Production](#in-production) section later on in this guide.
 
-Sprockets will also look through the paths specified in `config.assets.paths`, 
-which includes the standard application paths and any paths added by Rails 
+Sprockets will also look through the paths specified in `config.assets.paths`,
+which includes the standard application paths and any paths added by Rails
 engines.
 
 Images can also be organized into subdirectories if required, and then can be
@@ -405,11 +404,10 @@ JavaScript and stylesheet.
 * `image-url("rails.png")` becomes `url(/assets/rails.png)`
 * `image-path("rails.png")` becomes `"/assets/rails.png"`.
 
-The more generic form can also be used but the asset path and class must both be
-specified:
+The more generic form can also be used:
 
-* `asset-url("rails.png", image)` becomes `url(/assets/rails.png)`
-* `asset-path("rails.png", image)` becomes `"/assets/rails.png"`
+* `asset-url("rails.png")` becomes `url(/assets/rails.png)`
+* `asset-path("rails.png")` becomes `"/assets/rails.png"`
 
 #### JavaScript/CoffeeScript and ERB
 
@@ -498,12 +496,11 @@ In this example, `require_self` is used. This puts the CSS contained within the
 file (if any) at the precise location of the `require_self` call. If
 `require_self` is called more than once, only the last call is respected.
 
-NOTE. If you want to use multiple Sass files, you should generally use the [Sass
-`@import`
-rule](http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#import) instead
-of these Sprockets directives. Using Sprockets directives all Sass files exist
-within their own scope, making variables or mixins only available within the
-document they were defined in.
+NOTE. If you want to use multiple Sass files, you should generally use the [Sass `@import` rule](http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#import)
+instead of these Sprockets directives. Using Sprockets directives all Sass files exist within
+their own scope, making variables or mixins only available within the document they were defined in.
+You can do file globbing as well using `@import "*"`, and `@import "**/*"` to add the whole tree
+equivalent to how `require_tree` works. Check the [sass-rails documentation](https://github.com/rails/sass-rails#features) for more info and important caveats.
 
 You can have as many manifest files as you need. For example, the `admin.css`
 and `admin.js` manifest could contain the JS and CSS files that are used for the
@@ -530,7 +527,7 @@ and CSS file. The example used before was a controller called "projects", which
 generated an `app/assets/javascripts/projects.js.coffee` and an
 `app/assets/stylesheets/projects.css.scss` file.
 
-In development mode, or if the asset pipeline is disabled, when these files are 
+In development mode, or if the asset pipeline is disabled, when these files are
 requested they are processed by the processors provided by the `coffee-script`
 and `sass` gems and then sent back to the browser as JavaScript and CSS
 respectively. When asset pipelining is enabled, these files are preprocessed and
@@ -575,6 +572,33 @@ would generate this HTML:
 
 The `body` param is required by Sprockets.
 
+### Runtime Error Checking
+
+By default the asset pipeline will check for potential errors in development mode during
+runtime. To disable this behavior you can set:
+
+```ruby
+config.assets.raise_runtime_errors = false
+```
+
+When `raise_runtime_errors` is set to `false` sprockets will not check that dependencies of assets are declared properly. Here is a scenario where you must tell the asset pipeline about a dependency:
+
+If you have `application.css.erb` that references `logo.png` like this:
+
+```css
+#logo { background: url(<%= asset_data_uri 'logo.png' %>) }
+```
+
+Then you must declare that `logo.png` is a dependency of `application.css.erb`, so when the image gets re-compiled, the css file does as well. You can do this using the `//= depend_on_asset` declaration:
+
+```css
+//= depend_on_asset "logo.png"
+#logo { background: url(<%= asset_data_uri 'logo.png' %>) }
+```
+
+Without this declaration you may experience strange behavior when pushing to production that is difficult to debug. When you have `raise_runtime_errors` set to `true`, dependencies will be checked at runtime so you can ensure that all dependencies are met.
+
+
 ### Turning Debugging Off
 
 You can turn off debug mode by updating `config/environments/development.rb` to
@@ -609,7 +633,7 @@ Debug mode can also be enabled in Rails helper methods:
 
 The `:debug` option is redundant if debug mode is already on.
 
-You can also enable compression in development mode as a sanity check, and 
+You can also enable compression in development mode as a sanity check, and
 disable it on-demand as required for debugging.
 
 In Production
@@ -909,7 +933,7 @@ Customizing the Pipeline
 
 ### CSS Compression
 
-There is currently one option for compressing CSS, YUI. The [YUI CSS
+One of the options for compressing CSS is YUI. The [YUI CSS
 compressor](http://yui.github.io/yuicompressor/css.html) provides
 minification.
 
@@ -918,6 +942,11 @@ gem.
 
 ```ruby
 config.assets.css_compressor = :yui
+```
+The other option for compressing CSS if you have the sass-rails gem installed is 
+
+```ruby
+config.assets.css_compressor = :sass
 ```
 
 ### JavaScript Compression
@@ -1040,17 +1069,22 @@ Making Your Library or Gem a Pre-Processor
 As Sprockets uses [Tilt](https://github.com/rtomayko/tilt) as a generic
 interface to different templating engines, your gem should just implement the
 Tilt template protocol. Normally, you would subclass `Tilt::Template` and
-reimplement `evaluate` method to return final output. Template source is stored
-at `@code`. Have a look at
+reimplement the `prepare` method, which initializes your template, and the
+`evaluate` method, which returns the processed source. The original source is
+stored in `data`. Have a look at
 [`Tilt::Template`](https://github.com/rtomayko/tilt/blob/master/lib/tilt/template.rb)
 sources to learn more.
 
 ```ruby
 module BangBang
   class Template < ::Tilt::Template
+    def prepare
+      # Do any initialization here
+    end
+
     # Adds a "!" to original template.
     def evaluate(scope, locals, &block)
-      "#{@code}!"
+      "#{data}!"
     end
   end
 end
